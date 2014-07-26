@@ -2,21 +2,25 @@
  * thumbtri.js
  * Since 2014-07-22 16:18:22
  * @author しふたろう
- * ver 0.01
+ * ver 0.02
  */
 var recter = {}, trimer = {};
 var canvasWidth = 980, canvasHeight = 800;
 var thumbBoxWidth = 100, thumbBoxHeight = 100;
 //TODO 選択範囲の移動
-$(function()
+window.onload=function()
 {
-	var jqLayer = $('#rectLayer')
-		, img = new Image();
+	// var jqLayer = $('#rectLayer')
+	var jqLayer = document.getElementById('rectLayer')
+		, img = new Image()
+		, eById = function(i){return document.getElementById(i)}
+		, eByTag = function(t){return document.getElementsByTagName(t)}
+		, attr = function(i, k, v){(typeof i =="String" ? eById(i) : i).setAttribute(k,v); return i}
 		;
-	trimer.canvas = $('#trimBox').get(0);
+	trimer.canvas = eById('trimBox');
 	trimer.context = trimer.canvas.getContext('2d');
 
-	recter.canvas = $('#rectLayer').get(0);
+	recter.canvas = eById('rectLayer');
 	recter.context = recter.canvas.getContext('2d');
 	recter.context.clearRect(0, 0, recter.canvas.width, recter.canvas.height);
 	recter.mouseDown = false;
@@ -26,26 +30,28 @@ $(function()
 	recter.endY = -1;
 	recter.ext = false;
 	
-	$('canvas').attr('width', canvasWidth).attr('height', canvasHeight);
-	$('#thumbScraps').find('p').eq(0).css('height', thumbBoxHeight);
+	attr(attr(recter.canvas, 'width', canvasWidth), 'height', canvasHeight);
+	attr(attr(trimer.canvas, 'width', canvasWidth), 'height', canvasHeight);
+	eById('boxin').style.height = thumbBoxHeight + 'px';
+		// find('p').eq(0).css('height', thumbBoxHeight);
 	
 	bgFill(canvasWidth, canvasHeight);
 	
-	$(window).keydown(function(e)
+	window.onkeydown = function(e)
 	{
 		recter.ext = event.shiftKey;
 		if(recter.ext){return false}
 		return true;
-	});
-	$(window).keyup(function(e)
+	};
+	window.onkeyup = function(e)
 	{
 		recter.ext = event.shiftKey;
 		if(recter.ext){return false}
 		return true;
-	});
-	$('#rectLayer').mousedown(function(e)
+	};
+	eById('rectLayer').onmousedown = function(e)
 	{
-		var img, pos = mousePosition(e, $(this))
+		var img, pos = mousePosition(e, this)
 			, w = recter.endX - recter.startX, h = recter.endY - recter.startY
 			, panta, url
 			;
@@ -54,39 +60,41 @@ $(function()
 		if(pos.x < recter.endX && pos.x > recter.startX && pos.y < recter.endY && pos.y > recter.startY){
 			img = trimer.context.getImageData(recter.startX, recter.startY, w, h);
 			if(thumbBoxWidth > w || thumbBoxHeight > h){
-				recter.canvas.setAttribute('width', thumbBoxWidth + 'px'); recter.canvas.setAttribute('height', thumbBoxHeight + 'px');
+				//取得範囲が基準より小さい
+				attr(attr(recter.canvas, 'width', thumbBoxWidth + 'px'), 'height', thumbBoxHeight + 'px');
 				recter.context.putImageData(img, 0,0);
 				recter.context.drawImage(recter.canvas, 0, 0, w, h, 0, 0, thumbBoxWidth, thumbBoxHeight);
-	//			img = recter.context.getImageData(0, 0, thumbBoxWidth, thumbBoxHeight);
 			}else{
-				recter.canvas.setAttribute('width', w + 'px'); recter.canvas.setAttribute('height', h + 'px');
+				//取得範囲が基準より大きい
+				attr(attr(recter.canvas, 'width', w + 'px'), 'height', h + 'px');
 				recter.context.putImageData(img, 0,0);
 				recter.context.drawImage(recter.canvas, 0, 0, thumbBoxWidth, thumbBoxHeight);
 				img = recter.context.getImageData(0, 0, thumbBoxWidth, thumbBoxHeight);
-				recter.canvas.setAttribute('width', thumbBoxWidth + 'px'); recter.canvas.setAttribute('height', thumbBoxHeight + 'px');
+				attr(attr(recter.canvas, 'width', thumbBoxWidth + 'px'), 'height', thumbBoxHeight + 'px');
 				recter.context.putImageData(img, 0,0);
 			}
 
-			panta = $('#thumbScraps').find('p').eq(0);
+			//srcを取得してimgタグに貼る
+			panta = eById('boxin');
 			url = recter.ext ? recter.canvas.toDataURL('image/jpeg') : recter.canvas.toDataURL();
-			panta.append('<a href="' + url + '" target="_blank"><img src="' + url + '" height="' + thumbBoxHeight + '" /></a>');
+			panta.innerHTML += '<a href="' + url + '" target="_blank"><img src="' + url + '" height="' + thumbBoxHeight + '" /></a>';
 			
 			recter.canvas.setAttribute('width', canvasWidth + 'px'); recter.canvas.setAttribute('height', canvasHeight + 'px');
 		}
 		recter.startX = pos.x;
 		recter.startY = pos.y;
 		
-	});
-	jqLayer.mouseup(function(e)
+	};
+	recter.canvas.onmouseup = function(e)
 	{
 		recter.mouseDown = false;
 		var w = Math.abs(recter.endX - recter.startX), h = Math.abs(recter.endY - recter.startY)
 		
-	});
-	jqLayer.mousemove(function(e)
+	};
+	recter.canvas.onmousemove = function(e)
 	{
 		var mdown = recter.mouseDown
-			, pos = mousePosition(e, $(this))
+			, pos = mousePosition(e, this)
 			, ctx = recter.context
 			, cvs = recter.canvas
 			, w = Math.abs(recter.startX - pos.x), h = Math.abs(recter.startY - pos.y)
@@ -100,7 +108,7 @@ $(function()
 		ctx.clearRect(0, 0, cvs.width, cvs.height);
 		ctx.strokeRect(recter.startX, recter.startY, recter.endX - recter.startX, recter.endY - recter.startY);
 		
-	});
+	};
 	
 	
 	function dragoverFile(e)
@@ -130,7 +138,8 @@ $(function()
 
 	recter.canvas.ondrop = dropFile;
 	recter.canvas.ondragover= dragoverFile;
-});
+};
+
 
 function loadCanvas(img)
 {
@@ -172,10 +181,10 @@ function bgFill(w, h)
 	trimer.context.font = ' 400 48px Unknown Font, sans-serif';
 	trimer.context.fillText('ここに画像をドロップ！', canvasWidth / 2, canvasHeight / 2, 960, 40);
 }
-function mousePosition(event, obj)
+function mousePosition(event, e)
 {
 	var mdown = recter.mouseDown
-		 canvasPos = obj.get(0).getBoundingClientRect();
+		 canvasPos = e.getBoundingClientRect();
 		 
 	return{
 		x:event.clientX - canvasPos.left,

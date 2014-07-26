@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="utf-8">
+		<title>Thumbtri</title>
+		<meta name="description" content="">
+		<meta name="author" content="しふたろう">
+		<!-- <meta name="viewport" content="width=device-width; initial-scale=1.0"> -->
+
+		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+		<link rel="shortcut icon" href="./img/ltkb16.png">
+		<link rel="apple-touch-icon-precomposed" href="./img/apple-touch-icon.png">
+		<!-- <link rel="stylesheet" type="text/css" href="./style.css" media="all"> -->
+
+		<!-- <script src="/js/lib/jquery-2.0.0.min.js"></script> -->
+		<script src="./thumbtri.js"></script>
+		<style>
+
+		</style>
+	</head>
+<body style="background:hsl(180, 80%, 4%);">
+<div>
+	<div align="center" style="padding-top:30px;">
+		<div style="position:relative; width:960px; height:800px; margin: 0 auto;">
+			<canvas style="position:absolute; left:0; top:0;" id="trimBox" width="960" height="800">&nbsp;</canvas>
+			<canvas style="position:absolute; left:0; top:0;" id="rectLayer" width="960" height="800">キャンバス対応のブラウザをご利用ください</canvas>
+		</div>
+		<div id="thumbScraps" style="background: hsla(180, 80%, 40%, 0.6); overflow-x:scroll; overflow-y:hidden; position:fixed; bottom:0; left:0; width:100%; height:120px; "><p id="boxin" style="white-space: nowrap;"></p></div>
+	</div>
+</div>
+</body>
+</html>
