@@ -15,11 +15,15 @@
 		<!-- <script src="/js/lib/jquery-2.0.0.min.js"></script> -->
 		<script src="./thumbtri.js"></script>
 		<style>
+		img{
+			margin:1px;
+		}
 
 		</style>
 	</head>
 <body style="background:hsl(180, 80%, 4%);">
 <div>
+	<span style="color:white;">切り取り後サイズ：</span><input id="size" type="text" style="width:4em;"><span style="color:white;">px</span>
 	<div align="center" style="padding-top:30px;">
 		<div style="position:relative; width:960px; height:800px; margin: 0 auto;">
 			<canvas style="position:absolute; left:0; top:0;" id="trimBox" width="960" height="800">&nbsp;</canvas>
