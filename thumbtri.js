@@ -2,7 +2,7 @@
  * thumbtri.js
  * Since 2014-07-22 16:18:22
  * @author しふたろう
- * ver 0.1.0
+ * ver 0.1.1
  */
 var recter = {}, trimer = {};
 var canvasWidth = 980, canvasHeight = 800;
@@ -132,12 +132,11 @@ window.onload=function()
 			//srcを取得してimgタグに貼る
 			panta = eById('boxin');
 			url = recter.ext ? recter.canvas.toDataURL('image/jpeg') : recter.canvas.toDataURL();
-			name = recter.name;
 			
 //			panta.innerHTML += '<a href="' + url + '" target="_blank"><img src="' + url + '" height="' + thumbThumbWidth + '" /></a>';
-			panta.innerHTML += '<img src="' + url + '" height="' + thumbThumbWidth + '" />';
-			panta.onclick = function(){
-				screenshot(url, name);
+			panta.innerHTML += '<img src="' + url + '" height="' + thumbThumbWidth + '" width="auto" id="'+ recter.name + '" />';
+			panta.onclick = function(e){
+				screenshot(e.srcElement.src, e.srcElement.id);
 			};
 			
 			recter.canvas.setAttribute('width', canvasWidth + 'px'); recter.canvas.setAttribute('height', canvasHeight + 'px');
@@ -296,19 +295,20 @@ function mousePosition(event, e)
 	};
 }
 
-			
-function screenshot(dataurl, name)
+//parentElement: <img>
+function screenshot(url, name)
 {
-	var base64 = dataurl
+	var base64 = url
 		, blob = Base64toBlob(base64)
 	;
-	saveBlob(blob, name);
+	console.log(name.length )
+	saveBlob(blob, (name == null || name.length < 1) ? 'untitled' : name);
 }
 
 
-function saveBlob(blobdat, filedat) {
+function saveBlob(blobdat, fileName) {
 	if (/*@cc_on ! @*/false) {// IEの場合
-		window.navigator.msSaveBlob(blobdat, filedat);
+		window.navigator.msSaveBlob(blobdat, fileName);
 	} else {
 		var url = (window.URL || window.webkitURL)
 			, data = url.createObjectURL(blobdat)
@@ -317,7 +317,7 @@ function saveBlob(blobdat, filedat) {
 		;
 		e.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 		a.href = data;
-		a.download = filedat;
+		a.download = fileName;
 		a.dispatchEvent(e);
 	}
 }
